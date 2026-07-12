@@ -1,6 +1,6 @@
 # Arduino_GC9B72
 
-An **Arduino_GFX** display driver for the **GalaxyCore GC9B72** — the controller
+An **Arduino_GFX** display driver for the **GalaxyCore GC9B72**, the controller
 on **2.1-inch 360×360 round SPI TFT panels** that ship with **no public driver**
 anywhere. If you bought one of these round color displays and only got a blank
 screen, garbage, or noise with every "similar" driver (GC9A01, GC9C01, ST7789,
@@ -9,7 +9,7 @@ sequence, and until now that sequence wasn't available in any Arduino library.
 
 This library adds a proper `Arduino_GC9B72` class to
 [GFX Library for Arduino](https://github.com/moononournation/Arduino_GFX) so the
-panel just works — solid colors, shapes, text, the full GFX API.
+panel just works: solid colors, shapes, text, the full GFX API.
 
 ## The panel this is for
 
@@ -28,14 +28,14 @@ Resolution: 360x360
 - **Brand seen on these:** **EstarDyn** (also listed as "GoldenMorning",
   "M17 2.1 TFT YuanXing", or just "2.1 inch round display")
 - **Interface:** 4-wire SPI (SCL, SDA, DC, CS, RST) + backlight
-- **Power:** **3.3 V logic — do NOT feed 5 V to VCC**
+- **Power:** **3.3 V logic, do NOT feed 5 V to VCC**
 
 If the back of your board says `GC9B72`, this is your driver.
 
 ## Panel pinout
 
 The 10-pad breakout exposes: `GND VCC SCL SDA RST DC CS BL SDO TE`.
-Only 8 are needed — `SDO` (read-back) and `TE` (frame-sync) are left unconnected.
+Only 8 are needed; `SDO` (read-back) and `TE` (frame-sync) are left unconnected.
 
 | Panel pad | Meaning              | Notes                              |
 |-----------|----------------------|------------------------------------|
@@ -91,7 +91,7 @@ void setup() {
 }
 ```
 
-From here it's the standard Arduino_GFX API — `drawLine`, `fillRect`,
+From here it's the standard Arduino_GFX API: `drawLine`, `fillRect`,
 `drawCircle`, fonts, `Arduino_Canvas`, etc.
 
 See `examples/GC9B72_ColorTest`.
@@ -102,14 +102,14 @@ See `examples/GC9B72_ColorTest`.
   (tested up to ~20 MHz on short leads); if you use long/breadboard jumpers and
   see speckle, lower the clock via `gfx->begin(<hz>)`.
 - Color format is 16-bit **RGB565**, MADCTL RGB order (rotation 0). Rotations
-  1–3 are supported via `setRotation()`.
+  1-3 are supported via `setRotation()`.
 - The panel has a hardware reset line; wire `RST` for reliable startup.
 
 ## Credits
 
 The GC9B72 initialization register sequence is ported from the
 [xboot](https://github.com/xboot/xstar) project's `fb-gc9b72.c` reference
-driver — the only known-good public GC9B72 init. This library repackages it as
+driver, the only known-good public GC9B72 init. This library repackages it as
 an Arduino_GFX display class.
 
 ## License
