@@ -82,6 +82,9 @@ Arduino_DataBus *bus = new Arduino_ESP32SPI(TFT_DC, TFT_CS, TFT_SCLK, TFT_MOSI, 
 Arduino_GFX *gfx = new Arduino_GC9B72(bus, TFT_RST, 0 /*rotation*/, false /*IPS*/, 360, 360);
 
 void setup() {
+  pinMode(TFT_BL, OUTPUT);      // turn the backlight on, or the screen stays black
+  digitalWrite(TFT_BL, HIGH);
+
   gfx->begin();                 // or gfx->begin(spiHz) to set the SPI clock
   gfx->fillScreen(BLACK);
   gfx->setTextColor(WHITE);
@@ -90,6 +93,9 @@ void setup() {
   gfx->println("GC9B72");
 }
 ```
+
+If the screen stays black, check the backlight first: `TFT_BL` has to be driven
+HIGH. Jumper the `BL` pad to 3V3 to test the panel independently of any code.
 
 From here it's the standard Arduino_GFX API: `drawLine`, `fillRect`,
 `drawCircle`, fonts, `Arduino_Canvas`, etc.
