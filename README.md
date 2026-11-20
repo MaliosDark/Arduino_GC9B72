@@ -102,6 +102,52 @@ From here it's the standard Arduino_GFX API: `drawLine`, `fillRect`,
 
 See `examples/GC9B72_ColorTest`.
 
+## Increasing backlight brightness
+
+If the screen looks dim even with `BL` held fully HIGH, the limit is the
+breakout's hardware, not this driver. The notes below were worked out on a
+breakout marked `VER:TFT 2.10 1.0` and may not apply to other revisions, so
+check your own board before changing anything.
+
+### How the backlight is wired on that board
+
+- `VCC` does not go straight to the panel. It feeds a 3.3 V LDO (`U2`, SOT-23
+  marked `662K`, an XC6206P332 type). The panel logic and the LED anode run
+  from the LDO output.
+- `BL` switches an NPN transistor (`Q1`, marked `J3Y`, an S8050) through a
+  1 kΩ base resistor (`R1`). The transistor sinks the LED cathode.
+- The LED current is set by one series resistor, `R3` = 8.2 Ω (marked `8R2`).
+
+The LED current is roughly `(rail - LED forward voltage - transistor drop) / R3`.
+The voltage left over for `R3` is only a few hundred millivolts, so small
+changes to the rail or to `R3` change the brightness a lot.
+
+### Two changes that roughly double the brightness
+
+1. **Feed `VCC` from 5 V instead of 3.3 V, but only if your board has the
+   regulator.** With 3.3 V in, the LDO's dropout leaves the rail at about
+   3.1 V. With 5 V in, the rail is a full 3.3 V. The signal pins stay 3.3 V
+   logic. Before doing this, confirm that `U2` is fitted and marked `662K`, and
+   check with a multimeter that the `VCC` pad connects to the regulator input
+   (the single-pin side of the SOT-23) and has no continuity to the panel
+   flex pin 9 (`VDD`). On a board without the regulator, 5 V goes straight to
+   the panel and will destroy it: the "3.3 V only" warning above then applies.
+2. **Lower `R3` to about 5.1 Ω.** That is the value in the panel seller's
+   reference circuit. Either replace `R3`, or solder 13 Ω in parallel with the
+   existing 8.2 Ω (5.03 Ω combined). Do not go lower without the backlight
+   current rating for your panel.
+
+With both changes, a white screen measured 177 lux before and 350 lux after
+(same meter, same position), so about 2x.
+
+### After the change
+
+- `BL` still works as before, including PWM dimming.
+- The regulator now drops 5 V to 3.3 V while carrying the backlight current.
+  It should get warm at most; if it gets hot, go back to 3.3 V on `VCC`.
+- To see the actual LED current, measure the voltage across `R3` on a white
+  screen and divide by its resistance.
+
 ## Notes
 
 - SPI mode is **0** (set automatically). The controller handles fast SPI
